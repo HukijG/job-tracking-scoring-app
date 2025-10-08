@@ -481,6 +481,24 @@ After completing the checklist above, ask:
 
 This ensures Captain maintains control over the codebase and can review before merging.
 
+### Updating "Up Next" Section
+**IMPORTANT:** Once Captain confirms a step/task is complete and all changes are committed:
+1. Update [SETUP_PROGRESS.md](SETUP_PROGRESS.md) "🎯 Up Next" section with the next task
+2. Point to relevant documentation where details can be found
+3. Keep it concise - just reference the docs, don't repeat details
+4. Commit the update to track progress
+
+**Example:**
+```markdown
+### 🎯 Up Next
+**Next Session: Database Schema Implementation**
+- Create tables in Supabase
+- Set up RLS policies
+- See [DATA_ARCHITECTURE.md](project_documentation/DATA_ARCHITECTURE.md) for schema details
+```
+
+This keeps the project roadmap current and helps Captain know what's coming next.
+
 ---
 
 **Last Updated:** 2025-10-08
