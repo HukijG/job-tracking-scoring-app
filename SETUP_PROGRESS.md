@@ -263,6 +263,16 @@ npm run dev              # http://localhost:5173 (typical SvelteKit port)
 
 ## Recent Updates
 
+### 2025-10-08 - Phase 2.1 Complete ✅
+- ✅ Created Supabase client helper (`backend/src/lib/supabase.ts`)
+- ✅ Implemented `GET /api/jobs` endpoint with filtering and ranking
+- ✅ Implemented `GET /api/jobs/:id` endpoint with nested data
+- ✅ Implemented `GET /api/dashboard` endpoint with aggregations
+- ✅ All endpoints tested and verified with seed data
+- ✅ Error handling implemented (404, 500)
+- ✅ Query parameter filtering working (status, rank)
+- ✅ Phase 2.1 Core API Endpoints complete - ready for Phase 2.2
+
 ### 2025-10-08 - Phase 1 Complete ✅
 - ✅ Updated to new Supabase API key format (`sb_publishable_...` and `sb_secret_...`)
 - ✅ Environment variables configured (backend and frontend)
@@ -293,4 +303,4 @@ npm run dev              # http://localhost:5173 (typical SvelteKit port)
 ---
 
 **Last Updated:** 2025-10-08
-**Status:** ✅ Phase 1 Complete - Infrastructure and database ready for Phase 2
+**Status:** ✅ Phase 2.1 Complete - Core API endpoints ready for Phase 2.2 (Scoring API)

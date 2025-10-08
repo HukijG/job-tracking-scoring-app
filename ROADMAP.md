@@ -6,7 +6,7 @@ For detailed phase breakdowns, see [@project_documentation/DEVELOPMENT_ROADMAP.m
 
 ---
 
-## 🎯 Current Phase: Phase 2 - Backend API Development
+## 🎯 Current Phase: Phase 2.2 - Scoring API
 
 ### Phase 1 - Database & API Foundation ✅ COMPLETE
 
@@ -58,42 +58,49 @@ For detailed phase breakdowns, see [@project_documentation/DEVELOPMENT_ROADMAP.m
 
 ## 📅 Next Steps: Phase 2 Tasks
 
-### Phase 2.1: Core API Endpoints 🎯
-**Priority:** HIGH | **Estimated Time:** 2-3 days
+### Phase 2.1: Core API Endpoints ✅ COMPLETE
+**Priority:** HIGH | **Completed:** 2025-10-08
 
 Implement basic CRUD endpoints for jobs data using the existing database.
 
 #### Tasks:
-- [ ] **2.1.1** Create Supabase client helper function
+- [x] **2.1.1** Create Supabase client helper function
   - Location: `backend/src/lib/supabase.ts`
   - Reusable client initialization with proper config
   - Export typed client for use across routes
 
-- [ ] **2.1.2** Implement `GET /api/jobs` endpoint
+- [x] **2.1.2** Implement `GET /api/jobs` endpoint
   - Fetch all active jobs from database
   - Include current ranking data (join with `job_rankings`)
   - Add query params for filtering (status, rank)
   - Sort by composite score (descending)
   - Return: Array of jobs with rankings
 
-- [ ] **2.1.3** Implement `GET /api/jobs/:id` endpoint
+- [x] **2.1.3** Implement `GET /api/jobs/:id` endpoint
   - Fetch single job by ID
   - Include current ranking
   - Include scoring history (all scores for this job)
   - Include pipeline snapshots
   - Return: Job object with nested data
 
-- [ ] **2.1.4** Implement `GET /api/dashboard` endpoint
+- [x] **2.1.4** Implement `GET /api/dashboard` endpoint
   - Aggregate data for dashboard view
   - Count jobs by rank (A/B/C)
   - Count total active jobs
   - Recent activity (latest scores/rankings)
   - Return: Dashboard summary object
 
-- [ ] **2.1.5** Test all endpoints
+- [x] **2.1.5** Test all endpoints
   - Use curl or Postman
   - Verify data structure
   - Check error handling
+
+**Test Results:**
+- ✅ `GET /api/jobs` - Returns 10 active jobs sorted by composite score
+- ✅ `GET /api/jobs?rank=A` - Filter working (returns 1 A-ranked job)
+- ✅ `GET /api/jobs/:id` - Returns nested data (job, ranking, score history, pipeline)
+- ✅ `GET /api/dashboard` - Returns aggregated stats (10 active, 1 A, 1 B, 1 C)
+- ✅ 404 error handling - Returns proper error for non-existent job ID
 
 ---
 
