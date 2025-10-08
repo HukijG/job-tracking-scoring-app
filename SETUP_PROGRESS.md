@@ -57,21 +57,26 @@ npm run dev      # Start local dev server
 npm run deploy   # Deploy to Cloudflare (after Phase 1)
 ```
 
-**API Endpoints (Placeholder):**
-- `GET /` - Health check
-- `GET /api/jobs` - List jobs
-- `GET /api/jobs/:id` - Get job details
-- `POST /api/scores` - Submit score
-- `GET /api/dashboard` - Dashboard data
-- `POST /webhooks/recruiterflow` - Webhook receiver
+**API Endpoints Implemented:**
+- `GET /` - Health check ✅
+- `GET /api/test-db` - Database connection test ✅
+- `GET /api/jobs` - List jobs with filtering ✅
+- `GET /api/jobs/:id` - Get job details with scores ✅
+- `POST /api/jobs/:id/score` - Submit score ✅
+- `GET /api/dashboard` - Dashboard aggregated data ✅
+- `POST /webhooks/recruiterflow` - Webhook receiver (stub)
+
+**Libraries Implemented:**
+- `backend/src/lib/supabase.ts` - Typed Supabase client helper ✅
+- `backend/src/lib/scoring.ts` - Scoring calculation engine ✅
 
 **Next Actions:**
-- Implement actual route logic in Phase 1
+- Ready for Phase 3 (scoring refinement) or Phase 4 (frontend dashboard)
 - Configure secrets before first deployment:
   ```bash
   wrangler secret put SUPABASE_URL
-  wrangler secret put SUPABASE_SERVICE_KEY
-  wrangler secret put JWT_SECRET
+  wrangler secret put SUPABASE_SECRET_KEY
+  wrangler secret put ENVIRONMENT
   ```
 
 ---

@@ -2,6 +2,11 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { createClient } from '@supabase/supabase-js';
 import { getSupabaseClient } from './lib/supabase';
+import {
+  calculateJobRanking,
+  validateFactorScores,
+  type FactorScores,
+} from './lib/scoring';
 
 // Type definitions for Cloudflare Workers environment
 type Bindings = {
@@ -242,8 +247,194 @@ app.get('/api/jobs/:id', async (c) => {
   }
 });
 
-app.post('/api/scores', async (c) => {
-  return c.json({ message: 'Submit score endpoint - to be implemented' });
+// POST /api/jobs/:id/score - Submit scoring data
+app.post('/api/jobs/:id/score', async (c) => {
+  try {
+    const jobId = c.req.param('id');
+    const supabase = getSupabaseClient(c.env);
+
+    // Parse request body
+    let body: any;
+    try {
+      body = await c.req.json();
+    } catch (err) {
+      return c.json({ error: 'Invalid JSON in request body' }, 400);
+    }
+
+    // Extract and validate required fields
+    const {
+      scorer_id,
+      scoring_date,
+      client_engagement_score,
+      search_difficulty_score,
+      time_open_score,
+      fee_size_score,
+    } = body;
+
+    // Validate required fields
+    if (!scorer_id || !scoring_date) {
+      return c.json({
+        error: 'Missing required fields: scorer_id and scoring_date are required'
+      }, 400);
+    }
+
+    // Validate factor scores
+    const factorScores: FactorScores = {
+      client_engagement_score,
+      search_difficulty_score,
+      time_open_score,
+      fee_size_score,
+    };
+
+    if (!validateFactorScores(factorScores)) {
+      return c.json({
+        error: 'Invalid factor scores: all scores must be integers between 1-5'
+      }, 400);
+    }
+
+    // 1. Verify job exists
+    const { data: job, error: jobError } = await supabase
+      .from('jobs')
+      .select('id')
+      .eq('id', jobId)
+      .single();
+
+    if (jobError || !job) {
+      return c.json({ error: 'Job not found' }, 404);
+    }
+
+    // 2. Verify scorer exists in users table
+    const { data: user, error: userError } = await supabase
+      .from('users')
+      .select('id, role')
+      .eq('id', scorer_id)
+      .single();
+
+    if (userError || !user) {
+      return c.json({ error: 'Invalid scorer_id: user not found' }, 400);
+    }
+
+    // 3. Check for duplicate score (same user, same job, same date)
+    const { data: existingScore } = await supabase
+      .from('job_scores')
+      .select('id')
+      .eq('job_id', jobId)
+      .eq('scorer_id', scorer_id)
+      .eq('scoring_date', scoring_date)
+      .maybeSingle();
+
+    if (existingScore) {
+      return c.json({
+        error: 'Duplicate score: this user has already scored this job on this date'
+      }, 409);
+    }
+
+    // 4. Insert new score into job_scores table
+    const { data: newScore, error: insertError } = await supabase
+      .from('job_scores')
+      .insert({
+        job_id: jobId,
+        scorer_id,
+        scoring_date,
+        client_engagement_score,
+        search_difficulty_score,
+        time_open_score,
+        fee_size_score,
+      })
+      .select()
+      .single();
+
+    if (insertError) {
+      console.error('Error inserting score:', insertError);
+      return c.json({ error: 'Failed to save score' }, 500);
+    }
+
+    // 5. Fetch all scores for this job to recalculate ranking
+    const { data: allScores, error: scoresError } = await supabase
+      .from('job_scores')
+      .select(`
+        scorer_id,
+        scoring_date,
+        client_engagement_score,
+        search_difficulty_score,
+        time_open_score,
+        fee_size_score,
+        users (
+          role
+        )
+      `)
+      .eq('job_id', jobId);
+
+    if (scoresError || !allScores) {
+      console.error('Error fetching scores:', scoresError);
+      return c.json({ error: 'Failed to fetch scores for ranking calculation' }, 500);
+    }
+
+    // 6. Calculate new ranking
+    let rankingData;
+    try {
+      rankingData = calculateJobRanking(allScores);
+    } catch (err) {
+      console.error('Error calculating ranking:', err);
+      return c.json({
+        error: err instanceof Error ? err.message : 'Failed to calculate ranking'
+      }, 500);
+    }
+
+    // 7. Mark existing rankings as not current
+    await supabase
+      .from('job_rankings')
+      .update({ is_current: false })
+      .eq('job_id', jobId)
+      .eq('is_current', true);
+
+    // 8. Insert new ranking
+    const { data: newRanking, error: rankingError } = await supabase
+      .from('job_rankings')
+      .insert({
+        job_id: jobId,
+        scoring_date,
+        composite_score: rankingData.composite_score,
+        rank: rankingData.rank,
+        account_manager_composite: rankingData.account_manager_composite,
+        sales_person_composite: rankingData.sales_person_composite,
+        ceo_composite: rankingData.ceo_composite,
+        is_current: true,
+      })
+      .select()
+      .single();
+
+    if (rankingError) {
+      console.error('Error inserting ranking:', rankingError);
+      return c.json({ error: 'Failed to save ranking' }, 500);
+    }
+
+    // 9. Return success response with updated ranking
+    return c.json({
+      success: true,
+      message: 'Score submitted successfully',
+      score: {
+        id: newScore.id,
+        job_id: jobId,
+        scorer_id,
+        scoring_date,
+        client_engagement_score,
+        search_difficulty_score,
+        time_open_score,
+        fee_size_score,
+      },
+      ranking: {
+        composite_score: newRanking.composite_score,
+        rank: newRanking.rank,
+        account_manager_composite: newRanking.account_manager_composite,
+        sales_person_composite: newRanking.sales_person_composite,
+        ceo_composite: newRanking.ceo_composite,
+      },
+    }, 200);
+  } catch (err) {
+    console.error('Unexpected error in score submission:', err);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
 });
 
 // GET /api/dashboard - Dashboard aggregate statistics
