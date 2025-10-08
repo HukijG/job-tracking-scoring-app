@@ -1,0 +1,24 @@
+name = "job-tracking-api"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+# Workers environment variables (non-sensitive)
+[vars]
+ENVIRONMENT = "production"
+
+# KV namespace for caching (create this in Cloudflare dashboard)
+# Uncomment after creating KV namespace:
+# [[kv_namespaces]]
+# binding = "CACHE"
+# id = "your-kv-namespace-id-here"
+
+# Secrets to set via CLI:
+# wrangler secret put SUPABASE_URL
+# wrangler secret put SUPABASE_SERVICE_KEY
+# wrangler secret put RECRUITERFLOW_API_KEY
+# wrangler secret put RECRUITERFLOW_WEBHOOK_SECRET
+# wrangler secret put JWT_SECRET
+
+# Cron trigger for periodic Recruiterflow sync (uncomment when needed)
+# [triggers]
+# crons = ["*/15 * * * *"]  # Every 15 minutes

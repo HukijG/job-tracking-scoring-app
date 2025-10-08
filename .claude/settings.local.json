@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(npm install)",
+      "Bash(npm run dev:*)",
+      "Bash(curl http://127.0.0.1:8787/)",
+      "Bash(npm create:*)",
+      "Bash(npx sv:*)",
+      "Bash(npm init:*)",
+      "Bash(npm install:*)",
+      "Bash(pkill:*)",
+      "Bash(npm run build:*)",
+      "Bash(npx wrangler:*)",
+      "Bash(mv:*)",
+      "Bash(echo $MCP_SERVERS)",
+      "Bash(claude mcp add:*)",
+      "Read(//c/Users/JoelHaines/AppData/Roaming/Code/User/**)",
+      "Bash(git init:*)",
+      "Bash(git branch:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
