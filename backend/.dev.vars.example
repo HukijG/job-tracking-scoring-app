@@ -1,0 +1,6 @@
+# Supabase Configuration
+# IMPORTANT: Use SECRET key for backend (elevated privileges, bypasses RLS)
+# Format: sb_secret_... (NOT the legacy service_role JWT key)
+# NEVER expose this key in frontend code or commit to Git
+SUPABASE_URL=https://your-project-id.supabase.co
+SUPABASE_SECRET_KEY=sb_secret_your_secret_key_here
