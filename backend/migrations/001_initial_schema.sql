@@ -149,7 +149,10 @@ CREATE POLICY "Allow all operations for authenticated users" ON sync_log
 -- =====================================================
 -- When a new ranking is inserted, set all previous rankings for that job to is_current = false
 CREATE OR REPLACE FUNCTION update_current_ranking()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
     -- Set all previous rankings for this job to is_current = false
     UPDATE job_rankings
