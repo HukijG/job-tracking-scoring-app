@@ -137,18 +137,27 @@ Tracking Recruiterflow sync operations
 
 ## Recruiterflow Integration
 
-### API Endpoints to Use
-- `GET /jobs` - Fetch all jobs with filters
-- `GET /jobs/:id` - Fetch single job details
-- `GET /jobs/:id/candidates` - Fetch candidate pipeline
-- Custom fields API - Read/write linking data
+**Full Integration Details**: See [RECRUITERFLOW_INTEGRATION.md](RECRUITERFLOW_INTEGRATION.md)
+**API Reference**: [@recruiterflow_docs/rf_api_docs.yaml](../recruiterflow_docs/rf_api_docs.yaml)
+
+### API Configuration
+- **Base URL**: `https://api.recruiterflow.com`
+- **Authentication**: `RF-Api-Key` header
+- **Content Type**: `application/json`
+
+### Key API Endpoints
+- `GET /api/external/job/list` - Fetch all jobs with pagination and filters
+- `GET /api/external/job/{id}` - Fetch single job details
+- `GET /api/external/candidate/activities/stage-movement/list` - Track candidate pipeline stages
+- `GET /api/external/candidate/activity/list` - Fetch candidate activities
+- `GET /api/external/job/custom-field/list` - List custom fields (for linking)
 
 ### Webhook Events to Listen For
-- `job.created`
-- `job.updated`
-- `job.archived`
-- `candidate.stage_changed`
-- `candidate.added_to_job`
+- `job.created` - New job opened
+- `job.updated` - Job details changed
+- `job.archived` - Job closed/archived
+- `candidate.stage_changed` - Candidate moved in pipeline
+- `candidate.added_to_job` - New candidate added to job
 
 ### Custom Fields in Recruiterflow
 Consider adding custom field to jobs:

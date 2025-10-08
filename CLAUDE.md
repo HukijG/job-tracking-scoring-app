@@ -48,6 +48,9 @@ Replace ad-hoc job prioritization with data-driven A/B/C rankings based on:
 
 ### External Integrations
 - **Recruiterflow CRM**: Job data source via REST API and webhooks
+  - API Documentation: [@recruiterflow_docs/rf_api_docs.yaml](recruiterflow_docs/rf_api_docs.yaml)
+  - Base URL: `https://api.recruiterflow.com`
+  - Authentication: `RF-Api-Key` header
 
 ---
 
@@ -103,7 +106,11 @@ Job Tracking and Scoring/
 │   ├── DEPLOYMENT.md          # Deployment procedures
 │   ├── GIT_WORKFLOW.md        # Git conventions
 │   ├── DECISIONS.md           # Architecture decisions
-│   └── VERSIONS.md            # Version tracking
+│   ├── VERSIONS.md            # Version tracking
+│   └── RECRUITERFLOW_INTEGRATION.md # RF API integration details
+│
+├── recruiterflow_docs/         # Recruiterflow API documentation
+│   └── rf_api_docs.yaml       # OpenAPI spec (reference doc)
 │
 ├── ROADMAP.md                 # Current phase and next tasks
 ├── SETUP_PROGRESS.md          # Infrastructure setup status
@@ -267,15 +274,19 @@ app.get('/api/jobs', async (c) => {
 ### For Understanding the System
 3. [@project_documentation/DATA_ARCHITECTURE.md](project_documentation/DATA_ARCHITECTURE.md) - Database schema, data flows
 4. [@project_documentation/SCORING_MODEL.md](project_documentation/SCORING_MODEL.md) - How scoring/ranking works
-5. [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) - Business context and goals
+5. [@project_documentation/RECRUITERFLOW_INTEGRATION.md](project_documentation/RECRUITERFLOW_INTEGRATION.md) - Recruiterflow API integration
+6. [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) - Business context and goals
 
 ### For Development Planning
-6. [@project_documentation/DEVELOPMENT_ROADMAP.md](project_documentation/DEVELOPMENT_ROADMAP.md) - Full phase-by-phase plan
-7. [@project_documentation/FEATURES.md](project_documentation/FEATURES.md) - Detailed feature requirements
+7. [@project_documentation/DEVELOPMENT_ROADMAP.md](project_documentation/DEVELOPMENT_ROADMAP.md) - Full phase-by-phase plan
+8. [@project_documentation/FEATURES.md](project_documentation/FEATURES.md) - Detailed feature requirements
 
 ### For Deployment & Operations
-8. [@project_documentation/DEPLOYMENT.md](project_documentation/DEPLOYMENT.md) - How to deploy
-9. [@project_documentation/GIT_WORKFLOW.md](project_documentation/GIT_WORKFLOW.md) - Git conventions
+9. [@project_documentation/DEPLOYMENT.md](project_documentation/DEPLOYMENT.md) - How to deploy
+10. [@project_documentation/GIT_WORKFLOW.md](project_documentation/GIT_WORKFLOW.md) - Git conventions
+
+### For API Integration
+11. [@recruiterflow_docs/rf_api_docs.yaml](recruiterflow_docs/rf_api_docs.yaml) - Recruiterflow API reference (OpenAPI spec)
 
 ---
 
@@ -439,5 +450,38 @@ This is an **internal tool for 4 users**. Prioritize:
 
 ---
 
-**Last Updated:** 2025-10-07
-**Current Status:** Infrastructure complete, ready for Phase 1 development
+## Task Completion Workflow
+
+**IMPORTANT:** After completing any feature, bug fix, or significant work, ALWAYS follow this completion checklist:
+
+### Completion Checklist
+1. **Test thoroughly** - Ensure the feature/fix works as expected
+2. **Update documentation**:
+   - [ ] Update [CLAUDE.md](CLAUDE.md) if architecture, patterns, or important learnings changed
+   - [ ] Update [SETUP_PROGRESS.md](SETUP_PROGRESS.md) if setup steps completed
+   - [ ] Update [ROADMAP.md](ROADMAP.md) if phase tasks completed
+   - [ ] Update relevant docs in `project_documentation/` if requirements or design changed
+3. **Commit to Git**:
+   - [ ] Ensure you're on the correct branch
+   - [ ] Review changed files: `git status`
+   - [ ] Stage changes: `git add .`
+   - [ ] Commit with descriptive message following Git workflow conventions
+   - [ ] Push to remote: `git push origin <branch-name>`
+4. **Ask Captain** if ready to merge branch to main (NEVER delete or merge branches automatically)
+
+### Git Branch Policy
+- **NEVER** delete branches without explicit approval from Captain
+- **NEVER** merge branches to main automatically
+- **ALWAYS** ask Captain before merging feature branches
+- Keep feature branches until Captain confirms they can be deleted
+
+### When to Ask Captain
+After completing the checklist above, ask:
+> "Captain, I've completed [feature/bug fix name]. Documentation has been updated and changes are committed to the `[branch-name]` branch. Would you like me to merge this to main, or would you like to review first?"
+
+This ensures Captain maintains control over the codebase and can review before merging.
+
+---
+
+**Last Updated:** 2025-10-08
+**Current Status:** Git repository initialized, ready for environment configuration and documentation updates
