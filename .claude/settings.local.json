@@ -21,7 +21,19 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git remote add:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(timeout:*)",
+      "Bash(curl -s http://127.0.0.1:8787/api/jobs)",
+      "Bash(python:*)",
+      "Bash(curl -s \"http://127.0.0.1:8787/api/jobs?rank=A\")",
+      "Bash(curl -s http://127.0.0.1:8787/api/jobs/9433ed93-0719-4479-80b9-023db0ba188e)",
+      "Bash(curl:*)",
+      "Bash(git checkout:*)",
+      "Bash(git pull:*)",
+      "Bash(git merge:*)",
+      "Bash(start index.html)",
+      "Bash(start:*)",
+      "Bash(cmd /c start:*)"
     ],
     "deny": [],
     "ask": []

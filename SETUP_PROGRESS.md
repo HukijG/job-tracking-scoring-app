@@ -305,7 +305,65 @@ npm run dev              # http://localhost:5173 (typical SvelteKit port)
 - ✅ Resolved version warning
 - ✅ Dev server running cleanly
 
+### 2025-10-09 - Scoring Model Feedback Tool (Phases 1-2 Complete) ✅
+- ✅ **Phase 1:** Configuration management system
+  - Modular code structure (CSS + 5 JS modules)
+  - Criteria editor (add/edit/delete, customize 1-5 scales)
+  - Rank threshold editor (custom ranks, colors, thresholds)
+  - Export/import configuration as JSON
+  - Visual optimization for 1080p displays
+  - LocalStorage persistence
+- ✅ **Phase 2:** Bulk testing system
+  - CSV upload with drag & drop
+  - Sample CSV download (20 jobs)
+  - Two-column scoring interface (sticky reference panel)
+  - Auto-save functionality
+  - Smart navigation (Save & Next)
+  - Progress tracking and session persistence
+  - Export scored jobs to CSV
+- 🔜 **Phase 3:** Validation report (up next)
+  - Compare model rankings vs user expectations
+  - Match percentage calculation
+  - Export validation report
+
+**Documentation:**
+- [scoring-model-feedback/ROADMAP.md](scoring-model-feedback/ROADMAP.md) - Full roadmap
+- [scoring-model-feedback/PHASE1_COMPLETE.md](scoring-model-feedback/PHASE1_COMPLETE.md) - Phase 1 details
+- [scoring-model-feedback/PHASE2_COMPLETE.md](scoring-model-feedback/PHASE2_COMPLETE.md) - Phase 2 details
+
 ---
 
-**Last Updated:** 2025-10-08
-**Status:** ✅ Phase 2.1 Complete - Core API endpoints ready for Phase 2.2 (Scoring API)
+## 🎯 Scoring Model Feedback Tool
+
+**Location:** `scoring-model-feedback/`
+**Purpose:** Internal tool for tuning the job ranking model
+
+### Status: Phase 2 Complete ✅
+
+**What It Does:**
+- Configure scoring criteria and rank thresholds
+- Test single jobs with adjustable weights
+- Upload CSV of jobs for bulk testing
+- Score jobs and predict expected ranks
+- Validate model vs user expectations (Phase 3)
+
+**Current Features:**
+- ✅ Full configuration management
+- ✅ CSV upload and parsing
+- ✅ Bulk job scoring interface
+- ✅ Auto-save and session persistence
+- ✅ Export/import data as CSV
+- 🔜 Validation report (next)
+
+**Usage:**
+1. Open `scoring-model-feedback/index.html` in browser
+2. Configure criteria in Configuration tab
+3. Upload jobs CSV in Bulk Test tab
+4. Score jobs and select expected ranks
+5. View validation report (Phase 3)
+
+---
+
+**Last Updated:** 2025-10-09
+**Main App Status:** ✅ Phase 2 Complete - Backend API fully functional
+**Feedback Tool Status:** ✅ Phase 2 Complete - Bulk testing ready, Phase 3 next

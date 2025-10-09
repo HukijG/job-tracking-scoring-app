@@ -5,679 +5,140 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Job Scoring Model - Feedback Tool</title>
-    <style>
-        /* General Reset & Body Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: #333;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 24px;
-            margin-bottom: 8px;
-        }
-
-        .header p {
-            opacity: 0.9;
-            font-size: 14px;
-        }
-
-        .content {
-            padding: 30px;
-        }
-
-        .section {
-            margin-bottom: 30px;
-            padding-bottom: 30px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .section:last-child {
-            border-bottom: none;
-        }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #667eea;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .section-subtitle {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 20px;
-        }
-
-        .factor {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-        }
-
-        .factor-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .factor-name {
-            font-weight: 600;
-            font-size: 16px;
-            color: #333;
-        }
-
-        .factor-weight {
-            font-size: 24px;
-            font-weight: 700;
-            color: #667eea;
-        }
-
-        /* FIX: Removed touch-action: none; to allow mobile scrolling/swiping */
-        .slider-container {
-            margin-top: 15px;
-            padding: 10px 0;
-            /* touch-action: none; Removed */
-        }
-
-        /* SLIDER STYLES (Range Input) */
-
-        /* Base input style */
-        input[type="range"] {
-            width: 100%;
-            height: 44px;
-            /* Gives more vertical hit area for mobile */
-            background: transparent;
-            outline: none;
-            -webkit-appearance: none;
-            cursor: pointer;
-            padding: 0;
-            margin: 0;
-        }
-
-        /* Track Styles */
-        input[type="range"]::-webkit-slider-track {
-            width: 100%;
-            height: 10px;
-            background: #d3d3d3;
-            border-radius: 5px;
-            /* Added border to make track visually distinct on all platforms */
-            border: 1px solid #ccc;
-        }
-
-        input[type="range"]::-moz-range-track {
-            width: 100%;
-            height: 10px;
-            background: #d3d3d3;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        /* Thumb Styles (The draggable circle) */
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 28px;
-            /* Slightly smaller for better mobile interaction */
-            height: 28px;
-            border-radius: 50%;
-            background: #667eea;
-            cursor: grab;
-            margin-top: -10px;
-            /* Adjusted to center on the 10px track */
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-            transition: transform 0.1s ease;
-        }
-
-        input[type="range"]:active::-webkit-slider-thumb {
-            cursor: grabbing;
-            transform: scale(1.1);
-        }
-
-        input[type="range"]::-moz-range-thumb {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: #667eea;
-            cursor: grab;
-            border: none;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-            transition: transform 0.1s ease;
-        }
-
-        input[type="range"]:active::-moz-range-thumb {
-            cursor: grabbing;
-            transform: scale(1.1);
-        }
-
-        /* End SLIDER STYLES */
-
-        .factor-description {
-            font-size: 13px;
-            color: #666;
-            margin-top: 10px;
-            line-height: 1.5;
-        }
-
-        .criteria-list {
-            margin-top: 12px;
-            padding-left: 20px;
-        }
-
-        .criteria-list li {
-            font-size: 12px;
-            color: #555;
-            margin-bottom: 6px;
-            line-height: 1.4;
-        }
-
-        .total-weight {
-            background: #667eea;
-            color: white;
-            padding: 15px 20px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 600;
-            font-size: 18px;
-        }
-
-        .total-weight.invalid {
-            background: #dc3545;
-        }
-
-        .total-weight.valid {
-            background: #28a745;
-        }
-
-        .add-factor-btn {
-            background: white;
-            border: 2px dashed #667eea;
-            color: #667eea;
-            padding: 12px 20px;
-            border-radius: 8px;
-            width: 100%;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-top: 20px;
-            /* Added margin for spacing */
-        }
-
-        .add-factor-btn:hover {
-            background: #f8f9fa;
-        }
-
-        .job-test {
-            background: #fff9e6;
-            border: 2px solid #ffc107;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        .job-input {
-            margin-bottom: 15px;
-        }
-
-        .job-input label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 8px;
-        }
-
-        .job-input input[type="text"],
-        .job-input input[type="number"] {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-
-        .calculate-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
-        }
-
-        .result {
-            margin-top: 20px;
-            padding: 20px;
-            background: white;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .result-rank {
-            font-size: 48px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .rank-A {
-            color: #28a745;
-        }
-
-        .rank-B {
-            color: #ffc107;
-        }
-
-        .rank-C {
-            color: #dc3545;
-        }
-
-        .result-score {
-            font-size: 18px;
-            color: #666;
-            margin-bottom: 15px;
-        }
-
-        .result-breakdown {
-            text-align: left;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #e0e0e0;
-            font-size: 13px;
-            color: #666;
-        }
-
-        .info-box {
-            background: #e3f2fd;
-            border-left: 4px solid #2196f3;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 14px;
-            color: #1976d2;
-            margin-bottom: 20px;
-        }
-
-        .remove-factor {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-
-            .content {
-                padding: 20px;
-            }
-
-            .header h1 {
-                font-size: 20px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body>
     <div class="container">
+        <!-- Header -->
         <div class="header">
-            <h1>Job Scoring Model</h1>
-            <p>Review criteria, adjust weights, and test job rankings</p>
+            <div class="header-content">
+                <h1>Job Scoring Model - Feedback Tool</h1>
+                <p>Configure criteria, adjust weights, test rankings, and validate your scoring model</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn-icon" onclick="showHelp()" title="Help">❓</button>
+            </div>
         </div>
 
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <button class="tab-btn" data-tab="config">⚙️ Configuration</button>
+            <button class="tab-btn active" data-tab="single">🧪 Single Test</button>
+            <button class="tab-btn" data-tab="bulk">📊 Bulk Test</button>
+            <button class="tab-btn" data-tab="report">📈 Validation</button>
+        </div>
+
+        <!-- Tab Contents -->
         <div class="content">
-            <div class="info-box">
-                <strong>How it works:</strong> Each job is scored 1-5 on different factors. Each factor has a weight (%
-                importance). The weighted average determines the final rank: A (≥4.0), B (2.5-3.9), or C (&lt;2.5).
-            </div>
-
-            <div class="section">
-                <div class="section-title">
-                    📊 Scoring Factors
-                </div>
-                <div class="section-subtitle">
-                    Adjust the weights below (must total 100%)
-                </div>
-
-                <div id="factors-container">
-                </div>
-
-                <div class="total-weight" id="total-weight">
-                    <span>Total Weight:</span>
-                    <span id="total-value">0%</span>
-                </div>
-
-                <button class="add-factor-btn" onclick="addCustomFactor()">+ Add Custom Factor</button>
-            </div>
-
-            <div class="section">
-                <div class="section-title">
-                    🧪 Test Job Scoring
-                </div>
-                <div class="section-subtitle">
-                    Score a test job to see how the ranking works
-                </div>
-
-                <div class="job-test">
-                    <div class="job-input">
-                        <label>Job Title (optional)</label>
-                        <input type="text" id="job-title" placeholder="e.g., Senior Software Engineer">
-                    </div>
-
-                    <div id="score-inputs">
-                    </div>
-
-                    <button class="calculate-btn" onclick="calculateRank()">Calculate Rank</button>
-
-                    <div id="result" style="display: none;"></div>
+            <!-- Configuration Tab -->
+            <div id="tab-config" class="tab-content">
+                <div id="config-content">
+                    <!-- Rendered by app.js -->
                 </div>
             </div>
 
-            <div class="section">
-                <div class="section-title">
-                    🎯 Rank Thresholds
+            <!-- Single Test Tab -->
+            <div id="tab-single" class="tab-content active">
+                <div id="single-test-content">
+                    <!-- Rendered by app.js -->
                 </div>
-                <div class="factor">
-                    <div style="display: flex; gap: 20px; justify-content: space-around; text-align: center;">
-                        <div>
-                            <div class="result-rank rank-A" style="font-size: 32px;">A</div>
-                            <div style="font-size: 14px; color: #666;">Score ≥ 4.0</div>
-                        </div>
-                        <div>
-                            <div class="result-rank rank-B" style="font-size: 32px;">B</div>
-                            <div style="font-size: 14px; color: #666;">Score 2.5-3.9</div>
-                        </div>
-                        <div>
-                            <div class="result-rank rank-C" style="font-size: 32px;">C</div>
-                            <div style="font-size: 14px; color: #666;">Score &lt; 2.5</div>
-                        </div>
-                    </div>
+            </div>
+
+            <!-- Bulk Test Tab -->
+            <div id="tab-bulk" class="tab-content">
+                <div id="bulk-test-content">
+                    <!-- Rendered by app.js -->
+                </div>
+            </div>
+
+            <!-- Validation Report Tab -->
+            <div id="tab-report" class="tab-content">
+                <div id="report-content">
+                    <!-- Rendered by app.js -->
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Help Modal -->
+    <div id="help-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Help & Instructions</h2>
+                <button class="close-modal" onclick="closeHelp()">×</button>
+            </div>
+
+            <div style="font-size: 13px; line-height: 1.6;">
+                <h3 style="font-size: 15px; margin-top: 15px; margin-bottom: 8px;">⚙️ Configuration</h3>
+                <p>Define and customize your scoring criteria, rating scales, and rank thresholds.</p>
+                <ul style="margin-left: 20px; margin-top: 5px;">
+                    <li>Add/edit/delete criteria</li>
+                    <li>Customize 1-5 rating descriptions</li>
+                    <li>Adjust rank thresholds (A/B/C)</li>
+                    <li>Export/import configurations</li>
+                </ul>
+
+                <h3 style="font-size: 15px; margin-top: 15px; margin-bottom: 8px;">🧪 Single Test</h3>
+                <p>Test how a single job would be ranked using your current weights.</p>
+                <ul style="margin-left: 20px; margin-top: 5px;">
+                    <li>Adjust factor weights (must total 100%)</li>
+                    <li>Score a job on each criterion (1-5)</li>
+                    <li>See calculated rank and breakdown</li>
+                </ul>
+
+                <h3 style="font-size: 15px; margin-top: 15px; margin-bottom: 8px;">📊 Bulk Test</h3>
+                <p>Upload multiple jobs to test in batch.</p>
+                <ul style="margin-left: 20px; margin-top: 5px;">
+                    <li>Upload CSV with job listings</li>
+                    <li>Score each job on all criteria</li>
+                    <li>Predict expected rank for each</li>
+                    <li>Export scored jobs</li>
+                </ul>
+
+                <h3 style="font-size: 15px; margin-top: 15px; margin-bottom: 8px;">📈 Validation</h3>
+                <p>Compare model rankings vs your expectations.</p>
+                <ul style="margin-left: 20px; margin-top: 5px;">
+                    <li>See match percentage</li>
+                    <li>Review mismatched jobs</li>
+                    <li>Export validation report</li>
+                    <li>Tune weights based on results</li>
+                </ul>
+
+                <h3 style="font-size: 15px; margin-top: 15px; margin-bottom: 8px;">💾 Data Storage</h3>
+                <p>All data is stored locally in your browser using localStorage. No data is sent to any server.</p>
+            </div>
+
+            <div style="margin-top: 20px; text-align: center;">
+                <button class="btn-primary" onclick="closeHelp()">Got it!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load JavaScript Modules -->
+    <script src="js/storage.js"></script>
+    <script src="js/config-manager.js"></script>
+    <script src="js/scoring-engine.js"></script>
+    <script src="js/csv-parser.js"></script>
+    <script src="js/bulk-test.js"></script>
+    <script src="js/app.js"></script>
+
     <script>
-        // Default factors
-        let factors = [
-            {
-                id: 'client_engagement',
-                name: 'Client Engagement',
-                weight: 25,
-                description: 'Quality of client relationship and decision-making',
-                criteria: [
-                    '5 - Highly Engaged: Responds within 24h, quick interviews',
-                    '4 - Good: Responds within 48h, generally timely',
-                    '3 - Moderate: Responds within a week, some delays',
-                    '2 - Low: Slow responses (>1 week), minimal feedback',
-                    '1 - Poor: Very unresponsive, ghosts candidates'
-                ],
-                removable: false
-            },
-            {
-                id: 'search_difficulty',
-                name: 'Search Difficulty',
-                weight: 25,
-                description: 'How hard it is to find qualified candidates',
-                criteria: [
-                    '5 - Very Easy: Large talent pool, common skills',
-                    '4 - Easy: Good talent pool, standard requirements',
-                    '3 - Moderate: Limited pool, some specialized skills',
-                    '2 - Difficult: Scarce talent, niche skills',
-                    '1 - Very Difficult: Extremely rare skill combination'
-                ],
-                removable: false
-            },
-            {
-                id: 'time_open',
-                name: 'Time Open',
-                weight: 25,
-                description: 'How long the job has been open (urgency)',
-                criteria: [
-                    '5 - Brand New: 0-14 days open',
-                    '4 - Fresh: 15-30 days open',
-                    '3 - Moderate: 31-60 days open',
-                    '2 - Stale: 61-90 days open',
-                    '1 - Very Stale: 90+ days open'
-                ],
-                removable: false
-            },
-            {
-                id: 'fee_size',
-                name: 'Fee Size',
-                weight: 25,
-                description: 'Revenue potential of the placement',
-                criteria: [
-                    '5 - Excellent: £40k+ fee',
-                    '4 - Good: £30k-40k fee',
-                    '3 - Moderate: £20k-30k fee',
-                    '2 - Low: £10k-20k fee',
-                    '1 - Very Low: <£10k fee'
-                ],
-                removable: false
-            }
-        ];
-
-        function renderFactors() {
-            const container = document.getElementById('factors-container');
-            container.innerHTML = factors.map(factor => `
-                <div class="factor" data-factor-id="${factor.id}">
-                    <div class="factor-header">
-                        <div class="factor-name">${factor.name}</div>
-                        <div class="factor-weight" data-weight-id="${factor.id}">${factor.weight}%</div>
-                    </div>
-                    <div class="slider-container">
-                        <input type="range"
-                                min="0"
-                                max="100"
-                                value="${factor.weight}"
-                                oninput="updateWeight('${factor.id}', this.value)">
-                    </div>
-                    <div class="factor-description">${factor.description}</div>
-                    ${factor.criteria && factor.criteria.length > 0 ? `
-                        <ul class="criteria-list">
-                            ${factor.criteria.map(c => `<li>${c}</li>`).join('')}
-                        </ul>
-                    ` : ''}
-                    ${factor.removable ? `
-                        <button class="remove-factor" onclick="removeFactor('${factor.id}')">Remove</button>
-                    ` : ''}
-                </div>
-            `).join('');
-
-            updateTotal();
-            renderScoreInputs();
+        // Help modal functions
+        function showHelp() {
+            document.getElementById('help-modal').classList.add('active');
         }
 
-        // FIX: Optimized updateWeight function
-        function updateWeight(id, value) {
-            const factor = factors.find(f => f.id === id);
-            const newValue = parseInt(value);
-
-            // 1. Update the data model
-            factor.weight = newValue;
-
-            // 2. Update the factor-weight display instantly (avoids full re-render)
-            const weightEl = document.querySelector(`[data-weight-id="${id}"]`);
-            if (weightEl) {
-                weightEl.textContent = newValue + '%';
-            }
-
-            // 3. Update the total at the bottom
-            updateTotal();
-
-            // Note: Since only the weight is changing, we don't need to call renderFactors(), 
-            // which re-renders the *entire* list, which is slow and causes the slider to jump.
+        function closeHelp() {
+            document.getElementById('help-modal').classList.remove('active');
         }
 
-        function updateTotal() {
-            const total = factors.reduce((sum, f) => sum + f.weight, 0);
-            const totalEl = document.getElementById('total-weight');
-            const valueEl = document.getElementById('total-value');
-
-            valueEl.textContent = total + '%';
-
-            totalEl.classList.remove('valid', 'invalid');
-            if (total === 100) {
-                totalEl.classList.add('valid');
-            } else if (total !== 0) {
-                totalEl.classList.add('invalid');
+        // Close modal on background click
+        document.getElementById('help-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'help-modal') {
+                closeHelp();
             }
-        }
-
-        function renderScoreInputs() {
-            const container = document.getElementById('score-inputs');
-            container.innerHTML = factors.map(factor => `
-                <div class="job-input">
-                    <label>${factor.name} (1-5)</label>
-                    <input type="number"
-                            id="score-${factor.id}"
-                            min="1"
-                            max="5"
-                            placeholder="Enter 1-5"
-                            step="1">
-                </div>
-            `).join('');
-        }
-
-        function calculateRank() {
-            const total = factors.reduce((sum, f) => sum + f.weight, 0);
-            if (total !== 100) {
-                alert('Weights must total 100% before calculating!');
-                return;
-            }
-
-            let weightedSum = 0;
-            let breakdown = [];
-            let hasAllScores = true;
-
-            for (const factor of factors) {
-                const scoreInput = document.getElementById(`score-${factor.id}`);
-                const score = parseFloat(scoreInput.value);
-
-                if (isNaN(score) || score < 1 || score > 5) {
-                    hasAllScores = false;
-                    break;
-                }
-
-                const contribution = (score * factor.weight) / 100;
-                weightedSum += contribution;
-                breakdown.push({
-                    name: factor.name,
-                    score: score,
-                    weight: factor.weight,
-                    contribution: contribution
-                });
-            }
-
-            if (!hasAllScores) {
-                alert('Please enter a valid score (1-5) for all factors!');
-                return;
-            }
-
-            const finalScore = weightedSum;
-            let rank, rankClass;
-
-            if (finalScore >= 4.0) {
-                rank = 'A';
-                rankClass = 'rank-A';
-            } else if (finalScore >= 2.5) {
-                rank = 'B';
-                rankClass = 'rank-B';
-            } else {
-                rank = 'C';
-                rankClass = 'rank-C';
-            }
-
-            const jobTitle = document.getElementById('job-title').value || 'Test Job';
-
-            const resultEl = document.getElementById('result');
-            resultEl.style.display = 'block';
-            resultEl.innerHTML = `
-                <div class="result-rank ${rankClass}">${rank}</div>
-                <div class="result-score">Final Score: ${finalScore.toFixed(2)} / 5.0</div>
-                <div style="font-size: 14px; color: #666; margin-bottom: 15px;">${jobTitle}</div>
-                <div class="result-breakdown">
-                    <strong>Breakdown:</strong>
-                    ${breakdown.map(b => `
-                        <div style="margin-top: 8px;">
-                            ${b.name}: ${b.score} × ${b.weight}% = ${b.contribution.toFixed(2)}
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        function addCustomFactor() {
-            const name = prompt('Enter the name for the new factor:');
-            if (!name) return;
-
-            const description = prompt('Enter a short description (optional):');
-
-            const id = 'custom_' + Date.now();
-            factors.push({
-                id: id,
-                name: name,
-                weight: 0,
-                description: description || 'Custom factor description.',
-                criteria: ['Not defined.'],
-                removable: true
-            });
-
-            renderFactors();
-        }
-
-        function removeFactor(id) {
-            if (confirm('Are you sure you want to remove this factor?')) {
-                factors = factors.filter(f => f.id !== id);
-                renderFactors();
-            }
-        }
-
-        // Initialize
-        renderFactors();
+        });
     </script>
 </body>
 
