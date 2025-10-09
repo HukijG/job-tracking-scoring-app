@@ -18,9 +18,15 @@ type Bindings = {
 
 const app = new Hono<{ Bindings: Bindings }>();
 
-// CORS configuration
+// CORS configuration - Allow all localhost ports for development
 app.use('/*', cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000'], // Add production domain later
+  origin: (origin) => {
+    // Allow all localhost/127.0.0.1 origins in development
+    if (!origin || origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) {
+      return origin;
+    }
+    return null;
+  },
   allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowHeaders: ['Content-Type', 'Authorization'],
   credentials: true,

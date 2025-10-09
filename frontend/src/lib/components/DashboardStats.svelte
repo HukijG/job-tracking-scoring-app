@@ -53,19 +53,27 @@
 
 <style>
 	.stats-container {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-		gap: 1rem;
-		margin-bottom: 2rem;
+		display: flex;
+		gap: 0.75rem;
+		margin-bottom: 1.5rem;
+		background: white;
+		padding: 0.875rem 1rem;
+		border-radius: 8px;
+		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 	}
 
 	.stat-card {
-		background: white;
-		padding: 1.5rem;
-		border-radius: 8px;
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-		text-align: center;
-		border-left: 4px solid transparent;
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+		padding: 0.5rem 0.875rem;
+		border-radius: 6px;
+		border-left: 3px solid transparent;
+		transition: background 0.2s;
+	}
+
+	.stat-card:hover {
+		background: #f9fafb;
 	}
 
 	.stat-card.total {
@@ -85,17 +93,18 @@
 	}
 
 	.stat-value {
-		font-size: 2rem;
+		font-size: 1.5rem;
 		font-weight: 700;
 		color: #111827;
-		margin-bottom: 0.25rem;
+		line-height: 1;
 	}
 
 	.stat-label {
-		font-size: 0.875rem;
+		font-size: 0.75rem;
 		color: #6b7280;
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
+		font-weight: 500;
 	}
 
 	/* Skeleton loader */
@@ -104,10 +113,13 @@
 		overflow: hidden;
 		background: #f3f4f6;
 		border-left-color: #e5e7eb;
+		min-width: 100px;
+		height: 48px;
 	}
 
 	.skeleton-text {
-		height: 60px;
+		width: 100%;
+		height: 100%;
 		background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
 		background-size: 200% 100%;
 		animation: shimmer 1.5s infinite;
@@ -123,13 +135,18 @@
 		}
 	}
 
-	@media (max-width: 640px) {
+	@media (max-width: 768px) {
 		.stats-container {
-			grid-template-columns: repeat(2, 1fr);
+			flex-wrap: wrap;
+		}
+
+		.stat-card {
+			flex: 1 1 auto;
+			min-width: calc(50% - 0.375rem);
 		}
 
 		.stat-value {
-			font-size: 1.5rem;
+			font-size: 1.25rem;
 		}
 	}
 </style>

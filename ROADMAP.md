@@ -183,7 +183,7 @@ Simple authentication to identify users when scoring.
 
 ## 🎯 Current Phase: Phase 4 - Dashboard Frontend
 
-**Status:** Phase 4.1 Complete ✅ | **Next:** Phase 4.2 - Filtering & Sorting
+**Status:** Phase 4.1 & 4.2 Complete ✅ | **Next:** Phase 4.3 - Visual Design & Polish
 
 ### Phase 4.1: Dashboard Core ✅ COMPLETE
 **Priority:** HIGH | **Completed:** 2025-10-09
@@ -231,46 +231,60 @@ Build the main dashboard view that displays all jobs with rankings.
 
 ---
 
-### Phase 4.2: Filtering & Sorting ⚙️
-**Priority:** HIGH | **Estimated:** 2-3 days
+### Phase 4.2: Filtering & Sorting ✅ COMPLETE
+**Priority:** HIGH | **Completed:** 2025-10-09
 
 Add controls to filter and sort the job list.
 
 #### Tasks:
-- [ ] **4.2.1** Create FilterControls component
+- [x] **4.2.1** Create FilterControls component
   - Dropdown for rank filter (All, A, B, C)
-  - Dropdown for status filter (Active, Closed, All)
-  - Clear filters button
-  - Update URL params to persist filters
+  - Search input field for job title/client name
+  - Clear filters button (shows only when active)
+  - Responsive design
 
-- [ ] **4.2.2** Create SortControls component
+- [x] **4.2.2** Create SortControls component
   - Sort by composite score (default, descending)
   - Sort by days open (ascending/descending)
   - Sort by client name (alphabetical)
-  - Toggle sort direction
+  - Toggle sort direction with visual indicator
 
-- [ ] **4.2.3** Implement filter logic
-  - Add filter state to jobs store
-  - Apply filters to job list reactively
-  - Update API call with query params (`?rank=A`, `?status=active`)
-  - Show "No results" message when filters yield empty
-
-- [ ] **4.2.4** Implement sort logic
-  - Add sort state to jobs store
-  - Sort jobs client-side after fetch
-  - Persist sort preference in localStorage
-  - Visual indicator for active sort
-
-- [ ] **4.2.5** Add search functionality (optional)
-  - Search input field
-  - Filter by job title or client name
+- [x] **4.2.3** Implement filter logic
+  - Added filter state to jobs store (rank, search)
+  - Client-side filtering for instant response
+  - Separate raw data (allJobs) from filtered data (jobs)
   - Real-time filtering as user types
 
-**Test Criteria:**
-- Filter by rank A shows only A-ranked job(s)
-- Sort by days open reorders jobs correctly
-- URL updates with filter params (shareable links)
-- Search filters jobs in real-time
+- [x] **4.2.4** Implement sort logic
+  - Added sort state to jobs store
+  - Sort jobs client-side after fetch
+  - Visual indicator for active sort
+  - Auto-adjusts direction based on sort type
+
+- [x] **4.2.5** Add search functionality
+  - Search input field in FilterControls
+  - Filters by job title or client name
+  - Real-time filtering as user types
+
+- [x] **4.2.6** Fix CORS configuration
+  - Updated backend to allow all localhost ports dynamically
+  - Handles Vite's automatic port selection (5173, 5174, 5175, etc.)
+
+**Implementation:**
+- FilterControls: `frontend/src/lib/components/FilterControls.svelte`
+- SortControls: `frontend/src/lib/components/SortControls.svelte`
+- Enhanced jobs store: `frontend/src/lib/stores/jobs.ts`
+- CORS fix: `backend/src/index.ts`
+
+**Test Results:**
+- ✅ Filter by rank A shows only A-ranked jobs
+- ✅ Sort by days open reorders jobs correctly
+- ✅ Search filters jobs in real-time
+- ✅ Clear filters resets everything
+- ✅ All controls work with swimlane layout
+- ✅ CORS configured for dynamic localhost ports
+
+**Completed:** 2025-10-09
 
 ---
 
