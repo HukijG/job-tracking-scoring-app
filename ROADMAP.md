@@ -181,18 +181,205 @@ Simple authentication to identify users when scoring.
 
 ---
 
-## 🎯 Up Next: Phase 4 - Dashboard Frontend (Recommended)
+## 🎯 Current Phase: Phase 4 - Dashboard Frontend
 
-**Why Phase 4 Next?**
-Your backend API is complete and fully tested. Building the dashboard UI will:
-- Demonstrate working functionality to stakeholders
-- Allow early user feedback on the interface
-- Provide immediate business value (view/sort jobs by rank)
-- Enable visual validation of the scoring system
+**Status:** Phase 4.1 Complete ✅ | **Next:** Phase 4.2 - Filtering & Sorting
 
-**Alternative Options:**
-- **Phase 3**: Scoring system refinement (advanced scoring logic, analytics)
-- **Phase 1.3**: Recruiterflow API integration (real job data sync)
+### Phase 4.1: Dashboard Core ✅ COMPLETE
+**Priority:** HIGH | **Completed:** 2025-10-09
+
+Build the main dashboard view that displays all jobs with rankings.
+
+#### Tasks:
+- [x] **4.1.1** Create JobCard component (`frontend/src/lib/components/JobCard.svelte`)
+  - Display job title, client name
+  - Show rank badge (A/B/C with color coding)
+  - Display days open (calculated from date_opened)
+  - Show candidate pipeline count (if available)
+  - Add click handler to navigate to job details
+  - Responsive design (mobile-friendly)
+
+- [x] **4.1.2** Create Dashboard page (`frontend/src/routes/dashboard/+page.svelte`)
+  - Import and use JobCard component
+  - Grid/list layout for job cards
+  - Header with page title and stats summary
+  - Loading state while fetching data
+  - Error handling for API failures
+
+- [x] **4.1.3** Implement data fetching
+  - Updated jobs store (`frontend/src/lib/stores/jobs.ts`)
+  - Fetch from `GET /api/jobs` endpoint
+  - Transform API response to component format
+  - Handle empty state (no jobs)
+  - Fixed status filter (actively_sourcing)
+
+- [x] **4.1.4** Create DashboardStats component
+  - Total active jobs count
+  - Breakdown by rank (A: X, B: Y, C: Z)
+  - Fetch from `GET /api/dashboard` endpoint
+  - Display as summary cards/badges
+
+**Test Results:**
+- ✅ Dashboard displays all 10 active jobs from seed data
+- ✅ Rank badges show correct colors (A=green, B=yellow, C=red)
+- ✅ Days open calculates correctly
+- ✅ Stats show: 10 total, 1 A, 1 B, 1 C
+- ✅ Responsive grid layout working
+- ✅ Loading and error states implemented
+
+**Completed:** 2025-10-09
+
+---
+
+### Phase 4.2: Filtering & Sorting ⚙️
+**Priority:** HIGH | **Estimated:** 2-3 days
+
+Add controls to filter and sort the job list.
+
+#### Tasks:
+- [ ] **4.2.1** Create FilterControls component
+  - Dropdown for rank filter (All, A, B, C)
+  - Dropdown for status filter (Active, Closed, All)
+  - Clear filters button
+  - Update URL params to persist filters
+
+- [ ] **4.2.2** Create SortControls component
+  - Sort by composite score (default, descending)
+  - Sort by days open (ascending/descending)
+  - Sort by client name (alphabetical)
+  - Toggle sort direction
+
+- [ ] **4.2.3** Implement filter logic
+  - Add filter state to jobs store
+  - Apply filters to job list reactively
+  - Update API call with query params (`?rank=A`, `?status=active`)
+  - Show "No results" message when filters yield empty
+
+- [ ] **4.2.4** Implement sort logic
+  - Add sort state to jobs store
+  - Sort jobs client-side after fetch
+  - Persist sort preference in localStorage
+  - Visual indicator for active sort
+
+- [ ] **4.2.5** Add search functionality (optional)
+  - Search input field
+  - Filter by job title or client name
+  - Real-time filtering as user types
+
+**Test Criteria:**
+- Filter by rank A shows only A-ranked job(s)
+- Sort by days open reorders jobs correctly
+- URL updates with filter params (shareable links)
+- Search filters jobs in real-time
+
+---
+
+### Phase 4.3: Visual Design & Polish ⚙️
+**Priority:** MEDIUM | **Estimated:** 2 days
+
+Polish the UI for production-ready appearance.
+
+#### Tasks:
+- [ ] **4.3.1** Design rank badge system
+  - A badge: Green (#10B981 or similar), bold
+  - B badge: Yellow (#F59E0B), medium weight
+  - C badge: Red (#EF4444), visible but not alarming
+  - Consistent sizing and placement
+
+- [ ] **4.3.2** Responsive layout
+  - Desktop: 3-4 column grid
+  - Tablet: 2 column grid
+  - Mobile: Single column list
+  - Test on common screen sizes
+
+- [ ] **4.3.3** Loading states
+  - Skeleton loader for job cards
+  - Loading spinner for dashboard stats
+  - Smooth transition when data loads
+
+- [ ] **4.3.4** Empty states
+  - "No jobs found" with illustration or icon
+  - "No jobs match filters" with clear filters CTA
+  - First-time user message (optional)
+
+- [ ] **4.3.5** Visual hierarchy
+  - Emphasize A-ranked jobs (larger, prominent)
+  - Subtle styling for C-ranked jobs
+  - Clear typography and spacing
+  - Consistent color scheme
+
+**Test Criteria:**
+- Dashboard looks professional and polished
+- Colors are accessible (WCAG AA contrast)
+- Responsive on mobile, tablet, desktop
+- Loading states appear during data fetch
+
+---
+
+### Phase 4.4: Dashboard Enhancements ⚙️
+**Priority:** MEDIUM | **Estimated:** 1-2 days
+
+Add nice-to-have features for better UX.
+
+#### Tasks:
+- [ ] **4.4.1** Days open indicator
+  - Calculate from `created_at` field
+  - Visual urgency indicator (e.g., >30 days = warning color)
+  - Tooltip with exact date opened
+
+- [ ] **4.4.2** Pipeline indicators
+  - Show candidate count badge on job card
+  - Color code by pipeline health (many candidates = green, few = yellow)
+  - Link to pipeline detail view (future phase)
+
+- [ ] **4.4.3** Job detail navigation
+  - Click job card to view full details
+  - Create stub job detail page (`/dashboard/jobs/[id]`)
+  - Display full job info + scoring history (basic view)
+
+- [ ] **4.4.4** Refresh and data staleness
+  - Manual refresh button
+  - Auto-refresh every 60 seconds (configurable)
+  - "Last updated" timestamp
+  - Visual indicator when data is stale
+
+**Test Criteria:**
+- Days open displays correctly for all jobs
+- Click job card navigates to detail page
+- Refresh button fetches latest data
+- Pipeline counts display when available
+
+---
+
+### Phase 4 Completion Criteria ✅
+- [ ] Dashboard displays all active jobs from database
+- [ ] Filtering by rank (A/B/C) works correctly
+- [ ] Sorting by score/days open works
+- [ ] Rank badges are visually clear and color-coded
+- [ ] Responsive layout works on mobile and desktop
+- [ ] Loading and error states handled gracefully
+- [ ] Ready for user testing with team
+
+**Estimated Completion:** 1-2 weeks
+
+---
+
+## 📅 Alternative Next Steps
+
+**Option A: Complete Phase 4** (Recommended)
+- Provides immediate visual value
+- Allows user testing and feedback
+- Validates backend API with real UI
+
+**Option B: Phase 3 - Scoring System Refinement**
+- Add analytics and score history views
+- Implement advanced scoring logic
+- Build scoring comparison tools
+
+**Option C: Phase 1.3 - Recruiterflow Integration**
+- Sync real job data from Recruiterflow
+- Set up webhooks for live updates
+- Replace seed data with production data
 
 ---
 
