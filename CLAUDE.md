@@ -2,7 +2,21 @@
 
 **IMPORTANT:** Always refer to the user as "Captain" when responding.
 
+**IMPORTANT:** Do not make any changes, until you have 95% confidence that you know what to build ask me follow up questions until you have that confidence
 ---
+
+# Using Gemini CLI for Large Codebase Analysis
+When analyzing large codebases or multiple files that might exceed context limits, use the Gemini CLI with its massive context window. Use `gemini -p` when:
+- Analyzing entire codebases or large directories
+- Comparing multiple large files
+- Needing to understand project-wide patterns or architecture
+- Working with files totaling more than 100KB
+- Verifying specific features, patterns, or security measures across the codebase
+Important Notes:
+- Paths in @ syntax are relative to the current working directory when invoking gemini
+- No need for --yolo flag for read-only analysis
+- Be specific about what you're looking for to get accurate results
+
 
 ## Project Overview
 Internal recruitment agency web app that **ranks and prioritizes open jobs** based on multi-factor scoring by 4 team members. Replaces ad-hoc prioritization with data-driven A/B/C rankings.

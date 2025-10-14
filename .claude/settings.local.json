@@ -34,7 +34,9 @@
       "Bash(start index.html)",
       "Bash(start:*)",
       "Bash(cmd /c start:*)",
-      "Bash(taskkill:*)"
+      "Bash(taskkill:*)",
+      "Bash(gemini:*)",
+      "Bash(\"/c/Users/JoelHaines/Documents/Coding Projects/node-v22.17.1-win-x64/gemini\" -p \"Analyze the current dashboard implementation for visual design assessment. Examine these directories and files:\n@frontend/src/routes/dashboard\n@frontend/src/lib/components\n\nFocus on:\n1. Current visual design and styling approach (CSS, Tailwind, inline styles, etc.)\n2. A/B/C rank badge implementation and visual appearance\n3. Job card designs and layout\n4. Color scheme currently in use\n5. Typography and spacing patterns\n6. Loading states (if any)\n7. Empty states (if any)\n8. Filter and sort UI controls\n9. Responsive design implementation\n10. Interactive states (hover, focus, active)\n\nProvide a detailed analysis of what exists and what needs visual improvement for Phase 4.3.\")"
     ],
     "deny": [],
     "ask": []
